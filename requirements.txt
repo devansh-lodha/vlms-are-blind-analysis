@@ -1,0 +1,13 @@
+ipykernel
+transformers
+torch
+ipywidgets
+matplotlib
+numpy
+pandas
+tqdm
+accelerate
+timm
+einops
+vllm
+sentencepiece
