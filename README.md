@@ -48,8 +48,6 @@ The prompts are again the same as used in the paper.
 
 The `get_model_predictions()` function implements inference code for all models. Then a loop is setup that loads the model and processor and evaluates the model on the test data. The model's predictions are stored in a pandas dataframe. All of the code is taken and modified from respective model's documentation on HuggingFace.
 
-I've set up the code to run locally on Mac machines with MPS. To avoid memory issues, memory is freed after each model is evaluated.
-
 The pandas dataframe will have the following columns for each of the 3600 rows:
 - filename	
 - gt
