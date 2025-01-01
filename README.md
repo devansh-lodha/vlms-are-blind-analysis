@@ -1,4 +1,52 @@
 # vlms-are-blind-analysis
+This repository evaluates certain opensource VLMs on the first task of the BlindTest benchmark as in the paper [Vision language models are blind](https://arxiv.org/abs/2407.06581) . The task is to count the number of intersections between two lines. The models are evaluated by zero-shot prompting on the test data provided by the benchmark.
+- - - 
+<style>
+  .image-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse; /* Optional: Collapses borders for a cleaner look */
+  }
+
+  .image-table th {
+    text-align: center;
+    font-size: 1.2em; /* Adjust font size as needed */
+    padding: 10px; /* Add some padding around the header */
+    border-bottom: 1px solid #ddd; /* Add a bottom border to the header */
+  }
+
+  .image-table td {
+    width: 50%;
+    padding: 5px; /* Add some padding around the images */
+    text-align: center; /* Center the images within the cells */
+  }
+
+  .image-table img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Prevents small gap below images */
+    margin: 0 auto; /* Centers the image horizontally */
+  }
+</style>
+
+<table class="image-table">
+  <thead>
+    <tr>
+      <th colspan="2">Results</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="results/overall_accuracy.png" alt="Image 1"></td>
+      <td><img src="results/accuracy_by_resolution.png" alt="Image 2"></td>
+    </tr>
+    <tr>
+      <td><img src="results/accuracy_by_linewidth.png" alt="Image 3"></td>
+      <td><img src="results/accuracy_by_distance.png" alt="Image 4"></td>
+    </tr>
+  </tbody>
+</table>
+
 ## Instructions to set up the project locally
 ```bash
 python3 -m venv env
@@ -39,13 +87,10 @@ The pandas dataframe will have the following columns for each of the 3600 rows:
 - image_path
 - prompt
 - Qwen/Qwen2-VL-7B-Instruct
-- google/paligemma-3b-pt-448
-- microsoft/Florence-2-large
 - meta-llama/Llama-3.2-11B-Vision-Instruct
 - llava-hf/llava-v1.6-mistral-7b-hf
 - OpenGVLab/InternVL2_5-8B-MPO
 - microsoft/Phi-3.5-vision-instruct
-- mistralai/Pixtral-12B-2409
 
 The model columns will store their predictions.
 
@@ -53,10 +98,3 @@ The 'instruct' variant models is chosen where available since they are optimized
 
 ## Current Issues
 - My request to test `google/paligemma2-3b-pt-224` isn't yet approved by google on HuggingFace.
-- `microsoft/Florence-2-large` does not support VQA. Even the captions tend to include certain coordinates, but nothing about "number of interesections".
-- I estimate that doing 3600 prompts for every model will take somewhere around 20-40 days on my machine (M3 Max, 14 Core CPU, 30 Core GPU, 36 GB RAM) which is not feasible. There are some possible solutions, we can either reduce controls for the data to reduce size or reduce the number of models we're testing on, or else I'd love to modify this code for cuda and multi-gpu support if I can get access to a powerful server.
-- Some mac specific mps problems with `OpenGVLab/InternVL2_5-8B-MPO` (bicubic interpolation which is not yet supported for mps is used for resizing images), and `microsoft/Phi-3.5-vision-instruct`. I was unable to find a workaround for these issues and have resorted to CPU for these models. `mistralai/Pixtral-12B-2409` can only be implemented via vLLM which is primarily designed for high-performance inference on GPUs and not supported on MPS, so I'm not able to get this model to work.
-- Model output is unpredictable, I've noticed that `meta-llama/Llama-3.2-11B-Vision-Instruct` tends to output text of different lengths sometimes with a number enclosed in {} or sometimes textual answers like "twice". Some sort of postprocessing is needed but I'm afraid its hard to make a generalization until we have a good number of model outputs. However, models like `Qwen/Qwen2-VL-7B-Instruct`, `OpenGVLab/InternVL2_5-8B-MPO`, `microsoft/Phi-3.5-vision-instruct` give answers nicely with minor variations like `2`, `{2}` or `[{2}]` which I've managed to fix by stripping in `get_model_predictions()` function. Similary `llava-hf/llava-v1.6-mistral-7b-hf` had a consistent output pattern which put the number in {}, so I simply did a regex search to get the output.
-
-## What next
-Once I have the complete pandas dataframe, I can compare the model predictions againt `gt` column to calucalte model-wise accuracy, accuracy by line-width, generate a heatmap with x-axis showing distance between plots and y axis with all models. All of these evaluations are inspired by what is shown in the paper.
