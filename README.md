@@ -1,33 +1,5 @@
 # vlms-are-blind-analysis
 This repository evaluates certain opensource VLMs on the first task of the BlindTest benchmark as in the paper [Vision language models are blind](https://arxiv.org/abs/2407.06581) . The task is to count the number of intersections between two lines. The models are evaluated by zero-shot prompting on the test data provided by the benchmark.
-- - - 
-<style>
-  .image-table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse; /* Optional: Collapses borders for a cleaner look */
-  }
-
-  .image-table th {
-    text-align: center;
-    font-size: 1.2em; /* Adjust font size as needed */
-    padding: 10px; /* Add some padding around the header */
-    border-bottom: 1px solid #ddd; /* Add a bottom border to the header */
-  }
-
-  .image-table td {
-    width: 50%;
-    padding: 5px; /* Add some padding around the images */
-    text-align: center; /* Center the images within the cells */
-  }
-
-  .image-table img {
-    max-width: 100%;
-    height: auto;
-    display: block; /* Prevents small gap below images */
-    margin: 0 auto; /* Centers the image horizontally */
-  }
-</style>
 
 <table class="image-table">
   <thead>
